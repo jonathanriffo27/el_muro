@@ -32,10 +32,16 @@
 				<h5>{{posteo.usuario}}</h5>
 				<div class="container p-2">
 					<p>{{posteo.posteo}}</p>
-					<form action="/home" method="post">
+						<div class="container">
+							{% for comentario in comentarios %}
+								<p>{{comentario.usuario}}</p>
+								<p>{{comentario.comentario}}</p>
+							{% endfor %}
+						</div>
+					<form action="/comentario" method="post">
 						<div class="mb-3 ">
 						  <label for="exampleFormControlTextarea1" class="form-label fs-6">Postea un comentario</label>
-						  <textarea class="form-control" name="posteo" rows="1"></textarea>
+						  <textarea class="form-control" name="comentario" rows="1"></textarea>
 						</div>
 							<button style="float: right;" type="submit" class="btn btn-success btn-sm">Postear</button>
 					</form>

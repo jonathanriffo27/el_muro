@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block styles %}
+<style>
+  .gris {
+    background-color: cadetblue;
+  }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="row mt-5">
+  <div class="col-4 offset-4 gris rounded p-4">
+    <h3>Registrese en la Plataforma</h3>
+    <form>
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input name="name" type="text" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input name="email" type="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Confirme su password</label>
+        <input name="password_confirm" type="password" class="form-control" required>
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Registrarse</button>
+    </form>
+    <a href="/  ">Ingresar al Sitio</a>
+  </div>
+</div>
+{% endblock %}

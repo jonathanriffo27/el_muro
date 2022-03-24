@@ -47,7 +47,11 @@ app.get('/home', (req, res) => {
   if (!req.session.posteo) {
     req.session.posteo = []
   }
-  res.render('index.html',{posteos: req.session.posteo });
+  if (!req.session.comentarios) {
+    req.session.comentarios = []
+  }
+  res.render('index.html',{posteos: req.session.posteo, 
+    comentarios: req.session.comentarios});
 })
 app.post('/home', (req, res) => {
   let text = ""
@@ -56,7 +60,17 @@ app.post('/home', (req, res) => {
     posteo: req.body.posteo,
     usuario: `Raul - ${fecha}`
   })
-  console.log(req.session.posteo)
+  // console.log(req.session.posteo)
+  res.redirect('/home')
+})
+app.post('/comentario', (req, res) => {
+  let text = ""
+  const fecha = moment().format("MMMM Do YYYY, h:mm:ss a");
+  req.session.comentarios.push({
+    comentario: req.body.comentario,
+    usuario: `Marta - ${fecha}`
+  })
+  // console.log(req.session.comentario)
   res.redirect('/home')
 })
 app.get('/', (req, res) => {
@@ -79,7 +93,7 @@ app.post('/login', (req, res) => {
 })
 app.get('/register', (req, res) => {
   
-  res.render('index.html',{});
+  res.render('registro.html',{});
 })
 
 const PORT = 3000
