@@ -1,10 +1,12 @@
 const express = require('express')
 const nunjucks = require('nunjucks')
 const session = require('express-session')
-const moment = require("moment")
 const flash = require('connect-flash')
 
-const { get_user, create_user } = require('./db.js')
+const { 
+  get_user, create_user, create_post, get_posts, create_comment,
+  get_comments
+  } = require('./db.js')
 
 const app = express()
 
@@ -31,35 +33,39 @@ app.use(session({
   cookie: { maxAge: 1000*60*60*24 }
 }))
 
-app.get('/home', (req, res) => {
+function protected_route (req, res, next) {
+  if (!req.session.user) {
+    return res.redirect('/')
+  }
+  next()
+}
+
+app.get('/home', protected_route, async (req, res) => {
   const user = req.session.user
-  if (!req.session.posteo) {
-    req.session.posteo = []
-  }
-  if (!req.session.comentarios) {
-    req.session.comentarios = []
-  }
-  res.render('index.html',{posteos: req.session.posteo, 
-    comentarios: req.session.comentarios,user});
+  // const post = req.session.post
+  // const comment = req.session.comment
+  const user_id = user.id
+  const posts = await get_posts()
+  req.session.posts = posts 
+  const comments = await get_comments()
+  req.session.comments = comments 
+
+  console.log(comments)
+  res.render('index.html',{posts,user, comments});
 })
-app.post('/home', (req, res) => {
-  let text = ""
-  const fecha = moment().format("MMMM Do YYYY, h:mm:ss a");
-  req.session.posteo.push({
-    posteo: req.body.posteo,
-    usuario: `Raul - ${fecha}`
-  })
-  // console.log(req.session.posteo)
+app.post('/post', async (req, res) => {
+  const user_id = req.session.user.id
+  // console.log(user_id, post)
+  await create_post(user_id, post)
+
   res.redirect('/home')
 })
-app.post('/comentario', (req, res) => {
-  let text = ""
-  const fecha = moment().format("MMMM Do YYYY, h:mm:ss a");
-  req.session.comentarios.push({
-    comentario: req.body.comentario,
-    usuario: `Marta - ${fecha}`
-  })
-  // console.log(req.session.comentario)
+app.post('/comentario', async (req, res) => {
+  const post_id = req.body.post_id
+  const user_id = req.session.user.id
+  const comentario = req.body.comentario
+  // console.log(post_id, user_id, comentario)
+  await create_comment(post_id, user_id, comentario)
   res.redirect('/home')
 })
 app.get('/', (req, res) => {
@@ -120,6 +126,10 @@ app.post('/register', async (req, res) => {
   }
   // console.log('session', req.session);
 
+  res.redirect('/')
+})
+app.get('/logout', (req, res) => {
+  req.session.user = null
   res.redirect('/')
 })
 

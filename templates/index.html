@@ -7,7 +7,7 @@
           <a class="nav-link active" href="/prestamos">Inicio</a>
         </div>
       </div>
-      <form class="d-flex">
+      <form class="d-flex" action="/logout">
         <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
         <button class="btn btn-outline-light" type="submit">logout</button>
       </form>
@@ -15,27 +15,22 @@
   </nav>
 	<br>
 	<div class="container p-3">
-		{% if user %}
-			<h3>Bienvenido {{user.name}}!</h3>
-		{% else %}
-			 <h3 class="text-center">Necesita entrar a la plataforma  <a href="/login">Acá</a></h3>
-  	{% endif %}
 		<div class="container p-4">
-			<form action="/home" method="post">
+			<form action="/post" method="post">
 				<div class="mb-3 ">
 				  <label for="exampleFormControlTextarea1" class="form-label fs-5">Postea un mensaje</label>
-				  <textarea class="form-control" name="posteo" rows="3"></textarea>
+				  <textarea class="form-control" name="post" rows="3"></textarea>
 				</div>
 					<button style="float: right;" type="submit" class="btn btn-primary">Postear</button>
 			</form>
 		</div>
 		<br>
-		<h3>Posteos:</h3>	
+		<h3 class="ms-4">Posteos:</h3>	
 		<div class="container">
-			{% for posteo in posteos %} 
-				<h5>{{user.name}}</h5>
+			{% for post in posts %} 
+				<h5>{{user.name}} - {{post.created_at}}</h5>
 				<div class="container p-2">
-					<p>{{posteo.posteo}}</p>
+					<p>{{post.post}}</p>
 						<div class="container">
 							{% for comentario in comentarios %}
 								<p>{{comentario.usuario}}</p>
@@ -45,9 +40,10 @@
 					<form action="/comentario" method="post">
 						<div class="mb-3 ">
 						  <label for="exampleFormControlTextarea1" class="form-label fs-6">Postea un comentario</label>
+						  <input type="hidden" name="post_id" value="{{post.id}}">
 						  <textarea class="form-control" name="comentario" rows="1"></textarea>
 						</div>
-							<button style="float: right;" type="submit" class="btn btn-success btn-sm">Postear</button>
+							<button style="float: right;" type="submit" class="btn btn-success btn-sm">Comentar</button>
 					</form>
 				</div>
 	        {% endfor %}
