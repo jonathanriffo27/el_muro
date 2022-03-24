@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block main %}
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container ms-5">
+      <div class="collapse navbar-collapse ms-5" id="navbarNavAltMarkup">
+        <div class="navbar-nav ms-2">
+          <a class="nav-link active" href="/prestamos">Inicio</a>
+        </div>
+      </div>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+        <button class="btn btn-outline-light" type="submit">logout</button>
+      </form>
+    </div>
+  </nav>
+	<br>
+	<div class="container p-3">
+		<h3>Bienvenido Raul!</h3>
+		<div class="container p-4">
+			<form action="/home" method="post">
+				<div class="mb-3 ">
+				  <label for="exampleFormControlTextarea1" class="form-label fs-5">Postea un mensaje</label>
+				  <textarea class="form-control" name="posteo" rows="3"></textarea>
+				</div>
+					<button style="float: right;" type="submit" class="btn btn-primary">Postear</button>
+			</form>
+		</div>
+		<br>
+		<h3>Posteos:</h3>	
+		<div class="container">
+			{% for posteo in posteos %} 
+				<h5>{{posteo.usuario}}</h5>
+				<div class="container p-2">
+					<p>{{posteo.posteo}}</p>
+					<form action="/home" method="post">
+						<div class="mb-3 ">
+						  <label for="exampleFormControlTextarea1" class="form-label fs-6">Postea un comentario</label>
+						  <textarea class="form-control" name="posteo" rows="1"></textarea>
+						</div>
+							<button style="float: right;" type="submit" class="btn btn-success btn-sm">Postear</button>
+					</form>
+				</div>
+	        {% endfor %}
+		</div>
+	</div>
+	
+{% endblock %}	
