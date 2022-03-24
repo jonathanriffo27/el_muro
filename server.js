@@ -35,12 +35,12 @@ app.use(session({
 
 function protected_route (req, res, next) {
   if (!req.session.user) {
-    return res.redirect('/')
+    return res.redirect('/login')
   }
   next()
 }
 
-app.get('/home', protected_route, async (req, res) => {
+app.get('/', protected_route, async (req, res) => {
   const user = req.session.user
   // const post = req.session.post
   // const comment = req.session.comment
@@ -58,7 +58,7 @@ app.post('/post', async (req, res) => {
   // console.log(user_id, post)
   await create_post(user_id, post)
 
-  res.redirect('/home')
+  res.redirect('/')
 })
 app.post('/comentario', async (req, res) => {
   const post_id = req.body.post_id
@@ -66,9 +66,9 @@ app.post('/comentario', async (req, res) => {
   const comentario = req.body.comentario
   // console.log(post_id, user_id, comentario)
   await create_comment(post_id, user_id, comentario)
-  res.redirect('/home')
+  res.redirect('/')
 })
-app.get('/', (req, res) => {
+app.get('/login', (req, res) => {
   const errors = req.flash('errors')
   res.render('login.html',{errors});
 })
@@ -91,7 +91,7 @@ app.post('/login', async (req, res) => {
   req.session.user = user_encontrado  
 
   // 4. Redirigir al usuario al Home
-  res.redirect('/home')
+  res.redirect('/')
 })
 app.get('/register', (req, res) => {
   
