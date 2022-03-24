@@ -2,12 +2,17 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 const session = require('express-session')
 const moment = require("moment")
+const flash = require('connect-flash')
+
+const { get_user, create_user } = require('./db.js')
 
 const app = express()
+
 
 // Configuraciones estáticos
 app.use(express.static('public'))
 app.use(express.static('node_modules/bootstrap/dist'))
+app.use(flash())
 
 // se configura nunjucks
 nunjucks.configure("templates", {
@@ -25,23 +30,6 @@ app.use(session({
   secret: 'mi-clave',
   cookie: { maxAge: 1000*60*60*24 }
 }))
-const users = [
-  {
-    name: 'Hugo Muñoz',
-    password: '12345',
-    email: 'hugo@gmail.com'
-  },
-  {
-    name: 'Paula Inzunza',
-    password: '54321',
-    email: 'paula@gmail.com'
-  },
-  {
-    name: 'Carlos Horta',
-    password: '98765',
-    email: 'carlos@gmail.com'
-  }
-] 
 
 app.get('/home', (req, res) => {
   if (!req.session.posteo) {
@@ -74,10 +62,11 @@ app.post('/comentario', (req, res) => {
   res.redirect('/home')
 })
 app.get('/', (req, res) => {
-  
-  res.render('login.html',{});
+  const errors = req.flash('errors')
+  res.render('login.html',{errors});
 })
 app.post('/login', (req, res) => {
+  
   const email = req.body.email
   const password = req.body.password
   const user_encontrado = users.find( function(us) { return us.email == email })
@@ -94,6 +83,37 @@ app.post('/login', (req, res) => {
 app.get('/register', (req, res) => {
   
   res.render('registro.html',{});
+})
+app.post('/register', async (req, res) => {
+  // 1. Recuperar los campos del formulario
+  const name = req.body.name
+  const email = req.body.email
+  const password = req.body.password
+  const password_confirm = req.body.password_confirm
+
+  // 2. Validar que ambas contraseñas sean iguales
+  if (password != password_confirm) {
+    req.flash('errors', 'Las contraseñas no coinciden')
+    return res.redirect('/register')
+  }
+  
+  // 3. Validar que no exista otro usuario con el mismo correo
+  const user = await get_user(email)
+  if (user) {
+    req.flash('errors', 'Este email ya se encuentra registrado')
+    return res.redirect('/register')
+  }
+
+  // 4. Finalmente podemos guardar el nuevo usuario en base de datos
+  await create_user(name, email, password)
+
+  // 5. y en la sesión
+  req.session.user = {
+    name, email, password
+  }
+  // console.log('session', req.session);
+
+  res.redirect('/')
 })
 
 const PORT = 3000
