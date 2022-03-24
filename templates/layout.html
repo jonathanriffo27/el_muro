@@ -8,10 +8,17 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
-	{% block main %}
-    	<h2>Esto no debería verse</h2>
-    {% endblock %}
-   	
+	<div class="container">
+		{% for error in errors %}
+	        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+	          <strong>Error!</strong> {{ error }}
+	          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	        </div>
+	    {% endfor %}
+		{% block main %}
+	    	<h2>Esto no debería verse</h2>
+	    {% endblock %}
+   	</div>
    	{% block scripts %}{% endblock %}
 </body>
 </html>

@@ -32,6 +32,7 @@ app.use(session({
 }))
 
 app.get('/home', (req, res) => {
+  const user = req.session.user
   if (!req.session.posteo) {
     req.session.posteo = []
   }
@@ -39,7 +40,7 @@ app.get('/home', (req, res) => {
     req.session.comentarios = []
   }
   res.render('index.html',{posteos: req.session.posteo, 
-    comentarios: req.session.comentarios});
+    comentarios: req.session.comentarios,user});
 })
 app.post('/home', (req, res) => {
   let text = ""
@@ -65,19 +66,25 @@ app.get('/', (req, res) => {
   const errors = req.flash('errors')
   res.render('login.html',{errors});
 })
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   
   const email = req.body.email
   const password = req.body.password
-  const user_encontrado = users.find( function(us) { return us.email == email })
+
+  const user_encontrado = await get_user(email)
   if (!user_encontrado) {
-    return res.send('Usuario inexistente o contraseña incorrecta')
+    req.flash('errors', 'Usuario inexistente o contraseña incorrecta')
+    return res.redirect('/login')
   }
   //  2. Revisamos que las contraseñas coincidan
   if (user_encontrado.password != password) {
-    return res.send('Usuario inexistente o contraseña incorrecta')
+    req.flash('errors', 'Usuario inexistente o contraseña incorrecta')
+    return res.redirect('/')
   }
-  // 3. Redirigir al usuario al Home
+  // 3. Guardamos al usuario en sesion
+  req.session.user = user_encontrado  
+
+  // 4. Redirigir al usuario al Home
   res.redirect('/home')
 })
 app.get('/register', (req, res) => {

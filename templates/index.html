@@ -15,7 +15,11 @@
   </nav>
 	<br>
 	<div class="container p-3">
-		<h3>Bienvenido Raul!</h3>
+		{% if user %}
+			<h3>Bienvenido {{user.name}}!</h3>
+		{% else %}
+			 <h3 class="text-center">Necesita entrar a la plataforma  <a href="/login">Acá</a></h3>
+  	{% endif %}
 		<div class="container p-4">
 			<form action="/home" method="post">
 				<div class="mb-3 ">
@@ -29,7 +33,7 @@
 		<h3>Posteos:</h3>	
 		<div class="container">
 			{% for posteo in posteos %} 
-				<h5>{{posteo.usuario}}</h5>
+				<h5>{{user.name}}</h5>
 				<div class="container p-2">
 					<p>{{posteo.posteo}}</p>
 						<div class="container">
