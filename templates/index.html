@@ -28,12 +28,12 @@
 		<h3 class="ms-4">Posteos:</h3>	
 		<div class="container">
 			{% for post in posts %} 
-				<h5>{{user.name}} - {{post.created_at}}</h5>
+				<h5>{{post.name}} - {{post.created_at}}</h5>
 				<div class="container p-2">
 					<p>{{post.post}}</p>
 						<div class="container">
-							{% for comentario in comentarios %}
-								<p>{{comentario.usuario}}</p>
+							{% for comentario in post.comentarios %}
+								<p>{{comentario.name}} - {{comentario.created_at}}</p>
 								<p>{{comentario.comentario}}</p>
 							{% endfor %}
 						</div>

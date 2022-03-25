@@ -46,7 +46,7 @@ async function get_posts() {
   const client = await pool.connect()
 
   const { rows } = await client.query({
-    text: 'select * from posts',
+    text: 'select posts.post, posts.id, posts.created_at, users.name from posts join users on posts.user_id = users.id ',
     values: []
   })
 
@@ -66,7 +66,7 @@ async function get_comments() {
   const client = await pool.connect()
 
   const { rows } = await client.query({
-    text: 'select * from comentarios',
+    text: 'select comentarios.id, comentarios.post_id, comentarios.user_id, comentarios.comentario, comentarios.created_at, users.name from comentarios join users on comentarios.user_id = users.id',
     values: []
   })
 

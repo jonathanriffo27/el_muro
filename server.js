@@ -46,12 +46,14 @@ app.get('/', protected_route, async (req, res) => {
   // const comment = req.session.comment
   const user_id = user.id
   const posts = await get_posts()
-  req.session.posts = posts 
   const comments = await get_comments()
-  req.session.comments = comments 
 
+  for(let post of posts ){
+    post.comentarios = comments.filter( comm => comm.post_id == post.id )
+  }
+ 
   console.log(comments)
-  res.render('index.html',{posts,user, comments});
+  res.render('index.html',{posts,user});
 })
 app.post('/post', async (req, res) => {
   const user_id = req.session.user.id
