@@ -3,6 +3,7 @@ const nunjucks = require('nunjucks')
 const session = require('express-session')
 const flash = require('connect-flash')
 const fileUpload = require('express-fileupload')
+const fs = require('fs').promises
 
 const { 
   get_user, create_user, create_post, get_posts, create_comment,
@@ -23,6 +24,14 @@ nunjucks.configure("templates", {
   autoscape: true,
   watch: true,
 });
+
+// se configura fileupload
+app.use(fileUpload({
+  limits: { fileSize: 5242880 },
+  abortOnLimit: true,
+  responseOnLimit: 'El peso del archivo supera el máximo (5Mb)'
+}))
+
 
 // configuraciones de formulario
 app.use(express.json())
@@ -48,19 +57,29 @@ app.get('/', protected_route, async (req, res) => {
   const user_id = user.id
   const posts = await get_posts()
   const comments = await get_comments()
+  const images = await fs.readdir('public')
 
   for(let post of posts ){
     post.comentarios = comments.filter( comm => comm.post_id == post.id )
+    post.imagen = images.filter( img => img == post.id )
+
   }
- 
   // console.log(comments)
-  res.render('index.html',{posts,user});
+  res.render('index.html',{posts,user, images});
 })
 app.post('/post', async (req, res) => {
   const user_id = req.session.user.id
   const post = req.body.post
   // console.log(user_id, post)
   await create_post(user_id, post)
+
+  const image = req.files.image
+  // console.log(image)
+  await image.mv(`public/${image.name}`)
+  res.redirect('/')
+})
+app.post('/image', async (req, res) =>{
+  
 
   res.redirect('/')
 })

@@ -16,10 +16,12 @@
 	<br>
 	<div class="container p-3">
 		<div class="container p-4">
-			<form action="/post" method="post">
+			<form action="/post" method="post" enctype="multipart/form-data">
 				<div class="mb-3 ">
 				  <label for="exampleFormControlTextarea1" class="form-label fs-5">Postea un mensaje</label>
 				  <textarea class="form-control" name="post" rows="3"></textarea>
+					  <label>Imagen</label>
+	        	<input type="file" class="form-control" name="image">
 				</div>
 					<button style="float: right;" type="submit" class="btn btn-primary">Postear</button>
 			</form>
@@ -29,7 +31,15 @@
 		<div class="container">
 			{% for post in posts %} 
 				<h5>{{post.name}} - {{post.created_at}}</h5>
-				<div class="container p-2">
+				<!-- <div class="container p-2">
+					{% for image in images %}
+			      <div class="col-4">
+			        <div class="card" style="width: 18rem;">
+			          <img src="{{ image }}" class="card-img-top" alt="...">
+			        </div>
+			      </div>
+			    {% endfor %}
+					</div> -->
 					<p>{{post.post}}</p>
 						<div class="container">
 							{% for comentario in post.comentarios %}
