@@ -2,6 +2,7 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 const session = require('express-session')
 const flash = require('connect-flash')
+const fileUpload = require('express-fileupload')
 
 const { 
   get_user, create_user, create_post, get_posts, create_comment,
@@ -52,7 +53,7 @@ app.get('/', protected_route, async (req, res) => {
     post.comentarios = comments.filter( comm => comm.post_id == post.id )
   }
  
-  console.log(comments)
+  // console.log(comments)
   res.render('index.html',{posts,user});
 })
 app.post('/post', async (req, res) => {
@@ -129,7 +130,7 @@ app.post('/register', async (req, res) => {
   }
   // console.log('session', req.session);
 
-  res.redirect('/')
+  res.redirect('/login')
 })
 app.get('/logout', (req, res) => {
   req.session.user = null
