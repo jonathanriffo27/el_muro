@@ -57,6 +57,7 @@ app.get('/', protected_route, async (req, res) => {
 })
 app.post('/post', async (req, res) => {
   const user_id = req.session.user.id
+  const post = req.body.post
   // console.log(user_id, post)
   await create_post(user_id, post)
 
